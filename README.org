@@ -1,0 +1,224 @@
+* yas-autoinsert
+** Description
+This package bridges the gap between YASnippet and autoinsert. By
+populating ~auto-insert-alist~ with YASnippet templates and automatically
+expanding their content after insertion using ~auto-insert-mode~. It's an
+easy way to create dynamic file templates. Simply turn on ~yas-autoinsert~
+global minor mode and call ~yas-autoinsert-register-all~ somewhere in your
+Emacs initialization file to populate ~auto-insert-alist~ with templates
+from YASnippet directories.
+
+Of course, you will need to enable ~auto-insert-mode~ to have the snippet
+inserted and expanded into new files.
+
+Each snippet with ~autoinsert~ in its ~group~ directive will be turned into a
+new element to ~push~ onto ~auto-insert-alist~. Its ~condition~ directive
+will become the conditions for insertion and expansion of the template and must
+conform to the syntax alowed by autoinsert for the ~car~ of ~auto-insert-alist~
+ie :
+
+#+begin_src ebnf
+condition            <- "'" ? (single-conditon / condition-list)
+condition-list       <- "(" single-conditon * ")"
+single-condition     <- "'" ? (simple-condition / documented-condition)
+documented-condition <- "(" simple-condition . description ")"
+simple-condition     <- string-regexp / major-mode-symbol
+description          <- string
+#+end_src
+
+The autoinsert ~action~ will be a vector of actions that first inserts the
+content of the snippet template and then expands the content of the buffer
+with ~yas-expand-snippet~, so you can use everything YASnippet offers in the
+template.
+
+If a condition list is given, each condition will be inserted in order along
+with the same action.
+If you do not specify a condition, it will be determined by the snippet's
+major mode.
+
+To guarantee a particular order, snippets are grouped by mode and then
+inserted onto ~auto-insert-alist~ in lexicographic order (according to
+~string-lessp~) taking their ~name~ directive as key for the sort. The order
+of insertion for snippets of different modes is random.
+
+This means that a snippet directory looking like this:
+
+#+begin_src 
+snippets
+├── emacs-lisp-mode
+│   ├── all <name: ALL and condition: ".*\\.el">
+│   └── init <name: init and condition: "init\\.el">
+└── python-mode
+    ├── all <name: ALL and condition: ".*\\.py">
+    └── init <name: init and condition: "__init__\\.py">
+#+end_src
+
+will results to situations where init templates will be inserted before ALL
+ones for example :
+
+#+begin_src
+         (("init\\.el" . ACTION)            (("__init__\\.py" . ACTION)
+          (".*\\.el" . ACTION)         or    (".*\\.py" . ACTION)
+          ("__init__\\.py" . ACTION)         ("init\\.el" . ACTION)
+          (".*\\.py" . ACTION))              (".*\\.el" . ACTION))
+#+end_src
+
+since upper case names will have higher numerical value than lower case ones.
+
+Finally, whenever you save your snippet using the usual YASnippet mechanisms,
+your ~autoinsert~ templates will load into ~auto-insert-alist~.
+
+
+** Setup
+#+begin_src emacs-lisp
+(require 'yasnippet)
+(yas-global-mode +1)
+(auto-insert-mode +1)
+(require 'yas-autoinsert)
+(yas-autoinsert +1)
+(yas-autoinsert-register-all)
+#+end_src
+
+** Examples
+*** Simple regexp condition
+#+begin_src org
+# -*- mode: snippet -*-
+# name: README
+# key: readme
+# group: autoinsert
+# condition: "\\`README\\(\\.org\\)?\\'"
+# --
+#+title:  README
+#+date:   ${1:`(format-time-string \"%Y-%m-%d\")`}
+
+* $2
+** Getting started
+
+$0
+#+end_src
+
+*** Major-mode condition:
+#+begin_src org
+# -*- mode: snippet -*-
+# name: ORG
+# key: org
+# group: autoinsert
+# condition: 'org-mode
+# --
+#+title:  ${1:Example Org File}
+#+date:   ${2:`(format-time-string "%Y-%m-%d")`}
+
+* $0
+#+end_src
+
+*** Documented condition:
+#+begin_src scheme
+# -*- mode: snippet -*-
+# name: guix-channel
+# key: .gc
+# group: autoinsert
+# condition: ("\\.guix-channel\\'" ."Guix channel definition template")
+# --
+;; -*- mode: scheme; coding: utf-8 -*-
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(channel
+ (version 0)
+ (keyring-reference "${1:keyring}")
+ (url "https://gitlab.com/rchastel1/${2:`(file-name-base (directory-file-name (file-name-directory buffer-file-name)))`}.git")
+ $0)
+#+end_src
+
+*** Condition list:
+#+begin_src scheme
+# -*- mode: snippet -*-
+# name: R6RS
+# key: r6
+# group: autoinsert
+# condition: (("\\.sls\\'" . "R6RS scheme template") scheme-mode)
+# --
+;; -*- mode: scheme; coding: utf-8 -*-
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+#!r6rs
+
+(library ($1)
+  (export )
+  (import
+    (rnrs (6))
+    $2))
+
+$0
+#+end_src
+
+# ## Integrate with your tools
+
+# - [ ] [Set up project integrations](https://gitlab.com/rchastel1/yas-autoinsert/-/settings/integrations)
+
+# ## Collaborate with your team
+
+# - [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
+# - [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
+# - [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
+# - [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
+# - [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+
+# ## Test and Deploy
+
+# Use the built-in continuous integration in GitLab.
+
+# - [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
+# - [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
+# - [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
+# - [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
+# - [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+
+# ***
+
+# # Editing this README
+
+# When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+
+# ## Suggestions for a good README
+
+# Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+
+# ## Name
+# Choose a self-explaining name for your project.
+
+# ## Description
+# Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+
+# ## Badges
+# On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+
+# ## Visuals
+# Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+
+# ## Installation
+# Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+
+# ## Usage
+# Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+
+# ## Support
+# Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+
+# ## Roadmap
+# If you have ideas for releases in the future, it is a good idea to list them in the README.
+
+# ## Contributing
+# State if you are open to contributions and what your requirements are for accepting them.
+
+# For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+
+# You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+
+# ## Authors and acknowledgment
+# Show your appreciation to those who have contributed to the project.
+
+# ## License
+# For open source projects, say how it is licensed.
+
+# ## Project status
+# If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
