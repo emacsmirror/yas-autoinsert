@@ -10,7 +10,7 @@
 This package bridges the gap between YASnippet and autoinsert. By
 populating ~auto-insert-alist~ with YASnippet templates and automatically
 expanding their content after insertion using ~auto-insert-mode~. It's an
-easy way to create dynamic file templates. Simply turn on ~yas-autoinsert~
+easy way to create dynamic file templates. Simply turn on ~yas-autoinsert-mode~
 global minor mode and call ~yas-autoinsert-register-all~ somewhere in your
 Emacs initialization file to populate ~auto-insert-alist~ with templates
 from YASnippet directories.

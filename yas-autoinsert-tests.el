@@ -147,7 +147,7 @@ $0")))
 $0"))
 
   (shut-up
-    (yas-autoinsert 1)
+    (yas-autoinsert-mode 1)
     (yas-autoinsert-register-all))
   )
 
@@ -157,7 +157,7 @@ $0"))
 
 
  (it "deconnects from yas-after-reload-hook and after-save-hook on desactivation"
-     (yas-autoinsert -1)
+     (yas-autoinsert-mode -1)
      (expect yas-after-reload-hook
              :not :to-contain #'yas-autoinsert--register-all)
      (expect after-save-hook
@@ -250,7 +250,7 @@ $0"))
        (expect keys :not :to-contain 'org-mode)))
 
  (after-each
-  (yas-autoinsert -1)
+  (yas-autoinsert-mode -1)
   (delete-directory default-directory t))
 
  )

@@ -33,10 +33,10 @@
 ;; This package bridges the gap between YASnippet and autoinsert. By
 ;; populating `auto-insert-alist' with YASnippet templates and automatically
 ;; expanding their content after insertion using `auto-insert-mode'. It's an
-;; easy way to create dynamic file templates. Simply turn on `yas-autoinsert'
-;; global minor mode and call `yas-autoinsert-register-all' somewhere in your
-;; Emacs initialization file to populate `auto-insert-alist' with templates
-;; from YASnippet directories.
+;; easy way to create dynamic file templates. Simply turn on
+;; `yas-autoinsert-mode' global minor mode and call
+;; `yas-autoinsert-register-all' somewhere in your Emacs initialization file to
+;; populate `auto-insert-alist' with templates from YASnippet directories.
 
 ;; Of course, you will need to enable `auto-insert-mode' to have the snippet
 ;; inserted and expanded into new files.
@@ -191,7 +191,7 @@
   :group 'convenience)
 
 ;;;###autoload
-(define-minor-mode yas-autoinsert
+(define-minor-mode yas-autoinsert-mode
   "Toggle yas-autoinsert mode, a global minor mode.
 
 When yas-autoinsert is enabled, any snippet template defined with YASnippet
@@ -201,7 +201,7 @@ into `auto-insert-alist' for automatic insertion and expansion with its
   :lighter "yai"
   :global t
   (cond
-   ((and yas-autoinsert (featurep 'yas-autoinsert))
+   ((and yas-autoinsert-mode (featurep 'yas-autoinsert))
     (yas--message 4 "Enabling yas-autoinsert ...")
     (add-hook 'yas-after-reload-hook #'yas-autoinsert--register-all)
     (add-hook 'after-save-hook #'yas-autoinsert--register-snippet))
@@ -216,8 +216,10 @@ into `auto-insert-alist' for automatic insertion and expansion with its
 
 Returns `t' if it contains `autoinsert' in its `group' directive, `nil'
 otherwise."
-  (interactive (list (yas-autoinsert--lookup-snippet nil nil t) t)
-               'yas-minor-mode)
+  (interactive
+   (let ((snippet (yas-autoinsert--lookup-snippet nil nil t)))
+     (list snippet t)
+     yas-minor-mode))
   (let* ((is-autoinsert-snippet
           (member "autoinsert" (yas--template-group maybe-autoinsert-snippet)))
          (is-autoinsert-snippet
@@ -227,7 +229,7 @@ otherwise."
 
 (defun yas-autoinsert-deregister-all ()
   "Removes all YASnippet autoinserts from `auto-insert-alist'."
-  (interactive '() 'auto-insert-mode)
+  (interactive nil auto-insert-mode)
   (setq auto-insert-alist
         (seq-filter (lambda (e) (not (yas-autoinsert-alist-entryp e)))
                     auto-insert-alist)))
@@ -236,7 +238,7 @@ otherwise."
 (defun yas-autoinsert-register-all ()
   "Registers all `autoinsert' templates from current YASnippet tables into
 `auto-insert-alist'."
-  (interactive '() 'auto-insert-mode 'yas-minor-mode)
+  (interactive nil auto-insert-mode yas-minor-mode)
   (yas-reload-all t))
 
 (defun yas-autoinsert-register-snippet (&optional name mode)
@@ -251,7 +253,7 @@ If only `mode' is omitted, sets it to the current `major-mode' value.
 
 If the snippet `condition' directive is a list, registers the same
 snippet template for each condition in the list."
-  (interactive '() 'auto-insert-mode 'yas-minor-mode)
+  (interactive nil auto-insert-mode yas-minor-mode)
   (yas-autoinsert--register-snippet
    (yas-autoinsert--lookup-snippet name mode t) t))
 
@@ -266,7 +268,7 @@ If only `mode' is omitted, sets it to the current `major-mode' value.
 
 If the snippet `condition' directive is a list, deregisters all of
 them."
-  (interactive '() 'auto-insert-mode 'yas-minor-mode)
+  (interactive nil auto-insert-mode yas-minor-mode)
   (yas-autoinsert--deregister-snippet
    (yas-autoinsert--lookup-snippet name mode t)))
 
@@ -290,7 +292,7 @@ A condition directive must match the following grammar:
 
 Useful for debugging purpose"
   (yas-autoinsert--parse-condition*
-   maybe-yas-autoinsert-condition always always ignore))
+   maybe-yas-autoinsert-condition #'always #'always #'ignore))
 
 (defun yas-autoinsert-alist-entryp (maybe-yas-autoinsert-alist-entry)
   "Tells if an object is an `auto-insert-alist' entry created by
@@ -348,13 +350,13 @@ If no snippet can be found returns nil. "
     (when name+mode (apply #'yas-lookup-snippet name+mode))))
 
 (defun yas-autoinsert--canonical-entry-key (entry)
-  "Retrives the 'canonical' key of an `auto-insert-alist' entry.
+  "Retrives the `canonical' key of an `auto-insert-alist' entry.
 
 Returns the key of `entry' without its optional docstring.
 Throws an error if `entry' is not a valid `auto-insert-alist' one."
   (pcase entry
-    (`((,key . ,docstring) . ,action) key)
-    (`(,key . ,action) key)
+    (`((,key . ,_docstring) . ,_action) key)
+    (`(,key . ,_action) key)
     (_ (error "not a valid `auto-insert-alist' entry %S" entry))))
 
 (defun yas-autoinsert--single-conditionp (maybe-condition)
@@ -469,12 +471,12 @@ Automatically called by `yas-after-reload-hook'."
   (yas-autoinsert-deregister-all)
   (let ((to-register (list)))
     (maphash
-     (lambda (mode-sym mode)
+     (lambda (_mode-sym mode)
        ;; (let ((mode-snippets (list)))
        (maphash
-        (lambda (key snippets)
+        (lambda (_key snippets)
           (maphash
-           (lambda (snippet-name snippet)
+           (lambda (_snippet-name snippet)
              (when (yas-autoinsert-snippetp snippet)
                (add-to-list 'to-register snippet)
                ;; (setq mode-snippets
