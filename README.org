@@ -1,4 +1,7 @@
 * yas-autoinsert
+
+[[https://gitlab.com/rchastel1/yas-autoinsert/-/commits/main][https://gitlab.com/rchastel1/yas-autoinsert/badges/main/pipeline.svg]]
+
 ** Description
 This package bridges the gap between YASnippet and autoinsert. By
 populating ~auto-insert-alist~ with YASnippet templates and automatically
@@ -88,11 +91,11 @@ your ~autoinsert~ templates will load into ~auto-insert-alist~.
 # group: autoinsert
 # condition: "\\`README\\(\\.org\\)?\\'"
 # --
-#+title:  README
-#+date:   ${1:`(format-time-string \"%Y-%m-%d\")`}
+,#+title:  README
+,#+date:   ${1:`(format-time-string \"%Y-%m-%d\")`}
 
-* $2
-** Getting started
+,* $2
+,** Getting started
 
 $0
 #+end_src
@@ -105,10 +108,10 @@ $0
 # group: autoinsert
 # condition: 'org-mode
 # --
-#+title:  ${1:Example Org File}
-#+date:   ${2:`(format-time-string "%Y-%m-%d")`}
+,#+title:  ${1:Example Org File}
+,#+date:   ${2:`(format-time-string "%Y-%m-%d")`}
 
-* $0
+,* $0
 #+end_src
 
 *** Documented condition:
