@@ -14,7 +14,7 @@ build:
     - cask install
     - cask update
   script: &byte-compile
-    - cask emacs -batch -L . "(setq byte-compile-error-on-warn t)" -f batch-byte-compile yas-autoinsert*.el
+    - cask emacs -batch -L . --eval "(setq byte-compile-error-on-warn t)" -f batch-byte-compile yas-autoinsert*.el
 
 
 test:

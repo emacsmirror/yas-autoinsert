@@ -216,10 +216,10 @@ into `auto-insert-alist' for automatic insertion and expansion with its
 
 Returns `t' if it contains `autoinsert' in its `group' directive, `nil'
 otherwise."
+  (declare (modes yas-minor-mode))
   (interactive
    (let ((snippet (yas-autoinsert--lookup-snippet nil nil t)))
-     (list snippet t)
-     yas-minor-mode))
+     (list snippet t)))
   (let* ((is-autoinsert-snippet
           (member "autoinsert" (yas--template-group maybe-autoinsert-snippet)))
          (is-autoinsert-snippet
@@ -229,7 +229,8 @@ otherwise."
 
 (defun yas-autoinsert-deregister-all ()
   "Removes all YASnippet autoinserts from `auto-insert-alist'."
-  (interactive nil auto-insert-mode)
+  (declare (modes auto-insert-mode))
+  (interactive)
   (setq auto-insert-alist
         (seq-filter (lambda (e) (not (yas-autoinsert-alist-entryp e)))
                     auto-insert-alist)))
@@ -238,7 +239,8 @@ otherwise."
 (defun yas-autoinsert-register-all ()
   "Registers all `autoinsert' templates from current YASnippet tables into
 `auto-insert-alist'."
-  (interactive nil auto-insert-mode yas-minor-mode)
+  (declare (modes auto-insert-mode yas-minor-mode))
+  (interactive)
   (yas-reload-all t))
 
 (defun yas-autoinsert-register-snippet (&optional name mode)
@@ -253,7 +255,8 @@ If only `mode' is omitted, sets it to the current `major-mode' value.
 
 If the snippet `condition' directive is a list, registers the same
 snippet template for each condition in the list."
-  (interactive nil auto-insert-mode yas-minor-mode)
+  (declare (modes auto-insert-mode yas-minor-mode))
+  (interactive)
   (yas-autoinsert--register-snippet
    (yas-autoinsert--lookup-snippet name mode t) t))
 
@@ -268,7 +271,8 @@ If only `mode' is omitted, sets it to the current `major-mode' value.
 
 If the snippet `condition' directive is a list, deregisters all of
 them."
-  (interactive nil auto-insert-mode yas-minor-mode)
+  (declare (modes auto-insert-mode yas-minor-mode))
+  (interactive)
   (yas-autoinsert--deregister-snippet
    (yas-autoinsert--lookup-snippet name mode t)))
 
@@ -315,6 +319,8 @@ Useful for debugging purpose"
 
 ;;------------------------------------------------------------------------------
 ;; Private API
+(defun always (&rest _) t)
+(defun ignore (&rest _) nil)
 (defun yas-autoinsert--snippet-mode-from-path (snippet-file-path)
   "Gets a YASnippet snippet mode from its file path"
   (intern
