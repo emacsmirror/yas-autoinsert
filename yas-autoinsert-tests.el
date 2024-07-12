@@ -99,24 +99,32 @@ $0"))
 
 $0")))
 
+(defvar yas-autoinsert-test-dir)
+(defvar yas-autoinsert-test-dir)
+(defvar yas-autoinsert-snippets-dir)
+(defvar yas-autoinsert-org-snippets-dir)
+(defvar yas-autoinsert-scheme-snippets-dir)
+(defvar yas-autoinsert-elisp-snippets-dir)
+
 (describe
  "yas-autoinsert"
  (before-all
-  (setq yas-autoinsert-test-dir
-        (file-name-as-directory
-         (concat temporary-file-directory "yas-autoinsert-test"))
-        yas-autoinsert-snippets-dir
-        (file-name-as-directory
-         (concat yas-autoinsert-test-dir "snippets"))
-        yas-autoinsert-org-snippets-dir
-        (file-name-as-directory
-         (concat yas-autoinsert-snippets-dir "org-mode"))
-        yas-autoinsert-scheme-snippets-dir
-        (file-name-as-directory
-         (concat yas-autoinsert-snippets-dir "scheme-mode"))
-        yas-autoinsert-elisp-snippets-dir
-        (file-name-as-directory
-         (concat yas-autoinsert-snippets-dir "emacs-lisp-mode"))))
+  (setq
+   yas-autoinsert-test-dir
+   (file-name-as-directory
+    (concat temporary-file-directory "yas-autoinsert-test"))
+   yas-autoinsert-snippets-dir
+   (file-name-as-directory
+    (concat yas-autoinsert-test-dir "snippets"))
+   yas-autoinsert-org-snippets-dir
+   (file-name-as-directory
+    (concat yas-autoinsert-snippets-dir "org-mode"))
+   yas-autoinsert-scheme-snippets-dir
+   (file-name-as-directory
+    (concat yas-autoinsert-snippets-dir "scheme-mode"))
+   yas-autoinsert-elisp-snippets-dir
+   (file-name-as-directory
+    (concat yas-autoinsert-snippets-dir "emacs-lisp-mode"))))
  (before-each
   (mkdir yas-autoinsert-snippets-dir t)
   (mkdir yas-autoinsert-org-snippets-dir t)
