@@ -2,8 +2,7 @@
 :ID:       3577620f-13fa-43db-b11f-8d2c1a93d44f
 :END:
 #+TITLE: yas-autoinsert
-
-* yas-autoinsert :emacs:autoinsert:yasnippet:yas_autoinsert:
+#+FILETAGS: :emacs:autoinsert:yasnippet:yas_autoinsert:
 
 [[https://gitlab.com/rchastel1/yas-autoinsert/-/commits/main][https://gitlab.com/rchastel1/yas-autoinsert/badges/main/pipeline.svg]]
 
