@@ -1,4 +1,9 @@
-* yas-autoinsert
+:PROPERTIES:
+:ID:       3577620f-13fa-43db-b11f-8d2c1a93d44f
+:END:
+#+TITLE: yas-autoinsert
+
+* yas-autoinsert :emacs:autoinsert:yasnippet:yas_autoinsert:
 
 [[https://gitlab.com/rchastel1/yas-autoinsert/-/commits/main][https://gitlab.com/rchastel1/yas-autoinsert/badges/main/pipeline.svg]]
 
@@ -70,7 +75,6 @@ since upper case names will have higher numerical value than lower case ones.
 
 Finally, whenever you save your snippet using the usual YASnippet mechanisms,
 your ~autoinsert~ templates will load into ~auto-insert-alist~.
-
 
 ** Setup
 #+begin_src emacs-lisp
