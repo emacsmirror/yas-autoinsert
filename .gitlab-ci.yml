@@ -9,6 +9,8 @@ build:
       - emacs: "emacs:27"
       - emacs: "emacs:28"
       - emacs: "emacs:29"
+      - emacs: "emacs:30"
+      - emacs: "emacs:31"
   image: silex/$emacs-ci-cask
   before_script: &setup_cask
     - cask install
