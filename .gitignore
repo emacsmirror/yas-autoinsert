@@ -1,3 +1,5 @@
 .cask
 .gitlab-ci-local
 *.elc
+.aider*
+.eldev

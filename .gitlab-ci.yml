@@ -4,29 +4,29 @@ build:
   stage: build
   parallel: &runners
     matrix:
-      # - emacs: "emacs:25"
-      # - emacs: "emacs:26"
-      # - emacs: "emacs:27"
-      # - emacs: "emacs:28"
-      # - emacs: "emacs:29"
-      # - emacs: "emacs:30"
+      - emacs: "emacs:25"
+      - emacs: "emacs:26"
+      - emacs: "emacs:27"
+      - emacs: "emacs:28"
+      - emacs: "emacs:29"
+      - emacs: "emacs:30"
       - emacs: "emacs:31"
-  image: silex/$emacs-eask
-  before_script: &setup_eask
-    - eask clean all
-    - eask package
-    - eask install
-  script: &byte-compile
-    - eask compile
+  image: silex/$emacs-eldev
+  before_script:
+    - eldev clean
+  script:
+    - eldev compile
+  artifacts:
+    paths:
+      - .eldev/
 
 test:
   stage: test
-  needs: ["build"]
+  needs:
+    - job: build
+      artifacts: true
   parallel: *runners
-  image: silex/$emacs-eask
-  before_script:
-    - *setup_eask
-    - *byte-compile
+  image: silex/$emacs-eldev
   script:
-    - eask install-deps --dev
-    - eask emacs -batch -f package-initialize -L . -f buttercup-run-discover
+    - eldev test
+
