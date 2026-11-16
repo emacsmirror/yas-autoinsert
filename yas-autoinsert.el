@@ -82,10 +82,10 @@
 ;; will results to situations where init templates will be inserted before ALL
 ;; ones for example :
 ;;
-;;          (("init.el" . ACTION)           (("__init__.py" . ACTION)
-;;           ("*.el" . ACTION)         or    ("*.py" . ACTION)
-;;           ("__init__.py" . ACTION)        ("init.el" . ACTION)
-;;           ("*.py" . ACTION))              ("*.el" . ACTION))
+;;          (("init.el" . ACTION)
+;;           ("*.el" . ACTION)
+;;           ("__init__.py" . ACTION)
+;;           ("*.py" . ACTION))
 ;;
 ;; since upper case names will have higher numerical value than lower case ones.
 
@@ -184,7 +184,7 @@
 ;; -- Mode
 (defgroup yas-autoinsert
   nil
-  "An autoinsert trigger mechanism for YASnippet snippets"
+  "An autoinsert trigger mechanism for YASnippet snippets."
   :prefix "yas-autoinsert-"
   :group 'editing
   :group 'files
