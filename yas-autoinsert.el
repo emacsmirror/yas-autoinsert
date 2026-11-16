@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2015, 2016, 2018, 2020  Wieland Hoffmann
 ;; Copyright (C) 2023 Piknik
-;; Copyright (C) 2024 Romain Châtel
+;; Copyright (C) 2024-2026 Romain Châtel
 
 ;; Authors: Wieland Hoffmann <themineo+yatemplate@gmail.com>
 ;;          Piknik <https://github.com/piknik>

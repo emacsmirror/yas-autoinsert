@@ -1,6 +1,6 @@
 ;;; yas-autoinsert-tests.el --- yas-autoinsert tests  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2024  Romain Châtel
+;; Copyright (C) 2024-2026  Romain Châtel
 
 ;; Author: Châtel Romain <rchastel@protonmail.com>
 ;; Keywords:
