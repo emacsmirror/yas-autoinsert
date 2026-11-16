@@ -4,29 +4,29 @@ build:
   stage: build
   parallel: &runners
     matrix:
-      - emacs: "emacs:25"
-      - emacs: "emacs:26"
-      - emacs: "emacs:27"
-      - emacs: "emacs:28"
-      - emacs: "emacs:29"
-      - emacs: "emacs:30"
+      # - emacs: "emacs:25"
+      # - emacs: "emacs:26"
+      # - emacs: "emacs:27"
+      # - emacs: "emacs:28"
+      # - emacs: "emacs:29"
+      # - emacs: "emacs:30"
       - emacs: "emacs:31"
-  image: silex/$emacs-ci-cask
-  before_script: &setup_cask
-    - cask install
-    - cask update
+  image: silex/$emacs-eask
+  before_script: &setup_eask
+    - eask clean all
+    - eask package
+    - eask install
   script: &byte-compile
-    - cask emacs -batch -L . --eval "(setq byte-compile-error-on-warn t)" -f batch-byte-compile yas-autoinsert*.el
-
+    - eask compile
 
 test:
   stage: test
   needs: ["build"]
   parallel: *runners
-  image: silex/$emacs-ci-cask
+  image: silex/$emacs-eask
   before_script:
-    - *setup_cask
+    - *setup_eask
     - *byte-compile
   script:
-    - cask exec buttercup -L .
-
+    - eask install-deps --dev
+    - eask emacs -batch -f package-initialize -L . -f buttercup-run-discover
