@@ -414,7 +414,6 @@ OK, OK* and ERR are continuations called respectively with:
 - the sole condition found
 - the list of conditions found
 - the first object found that is not a valid condition."
-  ;; (message "%S" condition)
   (pcase condition
     ((pred yas-autoinsert--single-conditionp) (funcall ok condition))
     (`(quote ,quoted-condition)
@@ -502,26 +501,14 @@ Automatically called by `yas-after-reload-hook'."
   (let ((to-register (list)))
     (maphash
      (lambda (_mode-sym mode)
-       ;; (let ((mode-snippets (list)))
        (maphash
         (lambda (_key snippets)
           (maphash
            (lambda (_snippet-name snippet)
              (when (yas-autoinsert-snippetp snippet)
-               (add-to-list 'to-register snippet)
-               ;; (setq mode-snippets
-               ;;       (cl-merge
-               ;;        'list
-               ;;        mode-snippets
-               ;;        (list snippet)
-               ;;        (lambda (lhs rhs)
-               ;;          (string-lessp (yas--template-name lhs)
-               ;;                        (yas--template-name rhs)))))
-               ))
+               (add-to-list 'to-register snippet)))
            snippets))
         (yas--table-hash mode))
-       ;; (setq to-register (nconc mode-snippets to-register))
-       ;; )
        )
      yas--tables)
     (setq to-register
