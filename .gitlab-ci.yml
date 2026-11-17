@@ -15,6 +15,7 @@ build:
   before_script:
     - eldev clean
   script:
+    - eldev lint
     - eldev compile
   artifacts:
     paths:

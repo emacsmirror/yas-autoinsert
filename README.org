@@ -1,13 +1,12 @@
 :PROPERTIES:
 :ID:       3577620f-13fa-43db-b11f-8d2c1a93d44f
 :END:
-#+TITLE: yas-autoinsert
-#+FILETAGS: :emacs:autoinsert:yasnippet:yas_autoinsert:
+#+TITLE: YAS-Autoinsert
 
 [[https://gitlab.com/rchastel1/yas-autoinsert/-/commits/main][https://gitlab.com/rchastel1/yas-autoinsert/badges/main/pipeline.svg]]
 
 ** Description
-This package bridges the gap between YASnippet and autoinsert. By
+This package bridges the gap between YASnippet and auto-insert. By
 populating ~auto-insert-alist~ with YASnippet templates and automatically
 expanding their content after insertion using ~auto-insert-mode~. It's an
 easy way to create dynamic file templates. Simply turn on ~yas-autoinsert-mode~
@@ -18,8 +17,8 @@ from YASnippet directories.
 Of course, you will need to enable ~auto-insert-mode~ to have the snippet
 inserted and expanded into new files.
 
-Each snippet with ~autoinsert~ in its ~group~ directive will be turned into a
-new element to ~push~ onto ~auto-insert-alist~. Its ~condition~ directive
+Each snippet with ~autoinsert~ in its ~group~ property will be turned into a
+new element to ~push~ onto ~auto-insert-alist~. Its ~condition~ property
 will become the conditions for insertion and expansion of the template and must
 conform to the syntax alowed by autoinsert for the ~car~ of ~auto-insert-alist~
 ie :
@@ -33,7 +32,7 @@ simple-condition     <- string-regexp / major-mode-symbol
 description          <- string
 #+end_src
 
-The autoinsert ~action~ will be a vector of actions that first inserts the
+The auto-insert ~action~ will be a vector of actions that first inserts the
 content of the snippet template and then expands the content of the buffer
 with ~yas-expand-snippet~, so you can use everything YASnippet offers in the
 template.
@@ -45,7 +44,7 @@ major mode.
 
 To guarantee a particular order, snippets are grouped by mode and then
 inserted onto ~auto-insert-alist~ in lexicographic order (according to
-~string-lessp~) taking their ~name~ directive as key for the sort. The order
+~string-lessp~) taking their ~name~ property as key for the sort. The order
 of insertion for snippets of different modes is random.
 
 This means that a snippet directory looking like this:
