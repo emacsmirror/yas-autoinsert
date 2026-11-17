@@ -508,8 +508,7 @@ Automatically called by `yas-after-reload-hook'."
              (when (yas-autoinsert-snippetp snippet)
                (add-to-list 'to-register snippet)))
            snippets))
-        (yas--table-hash mode))
-       )
+        (yas--table-hash mode)))
      yas--tables)
     (setq to-register
           (sort to-register
