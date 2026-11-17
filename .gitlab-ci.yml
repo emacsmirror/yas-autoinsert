@@ -12,6 +12,10 @@ build:
       - emacs: "emacs:30"
       - emacs: "emacs:31"
   image: silex/$emacs-eldev
+  only:
+    changes:
+      - yas-autoinsert.el
+      - yas-autoinsert-tests.el
   before_script:
     - eldev clean
   script:
