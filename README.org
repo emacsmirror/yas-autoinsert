@@ -3,7 +3,8 @@
 :END:
 #+TITLE: YAS-Autoinsert
 
-[[https://gitlab.com/rchastel1/yas-autoinsert/-/commits/main][https://gitlab.com/rchastel1/yas-autoinsert/badges/main/pipeline.svg]]
+[[https://gitlab.com/rchastel1/emacs/yas-autoinsert/-/releases/permalink/latest][https://gitlab.com/rchastel1/emacs/yas-autoinsert//-//badges/release.svg]]
+[[https://gitlab.com/rchastel1/emacs/yas-autoinsert/-/commits/main][https://gitlab.com/rchastel1/emacs/yas-autoinsert/badges/main/pipeline.svg]]
 
 ** Description
 This package bridges the gap between YASnippet and auto-insert. By

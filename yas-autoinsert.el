@@ -9,7 +9,7 @@
 ;;          Romain Châtel <rchastel@protonmail.com>
 ;; Maintainer: Romain Châtel <rchastel@protonmail.com>
 ;; URL: https://gitlab.com/rchastel1/yas-autoinsert
-;; Version: 0.0.1
+;; Version: 1.0.0
 ;; Package-Requires: ((emacs "25.1") (yasnippet "0.8.1"))
 ;; Keywords: editing, files, convenience
 
