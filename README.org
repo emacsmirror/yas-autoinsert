@@ -1,7 +1,7 @@
 :PROPERTIES:
 :ID:       3577620f-13fa-43db-b11f-8d2c1a93d44f
 :END:
-#+TITLE: YAS-Autoinsert
+#+TITLE: YAS Autoinsert
 
 [[https://gitlab.com/rchastel1/emacs/yas-autoinsert/-/releases/permalink/latest][https://gitlab.com/rchastel1/emacs/yas-autoinsert//-//badges/release.svg]]
 [[https://gitlab.com/rchastel1/emacs/yas-autoinsert/-/commits/main][https://gitlab.com/rchastel1/emacs/yas-autoinsert/badges/main/pipeline.svg]]
