@@ -4,9 +4,9 @@
 ;; Copyright (C) 2023 Piknik
 ;; Copyright (C) 2024-2026 Romain Châtel
 
-;; Authors: Wieland Hoffmann <themineo+yatemplate@gmail.com>
-;;          Piknik <https://github.com/piknik>
-;;          Romain Châtel <rchastel@protonmail.com>
+;; Author: Wieland Hoffmann <themineo+yatemplate@gmail.com>
+;;         Piknik <https://github.com/piknik>
+;;         Romain Châtel <rchastel@protonmail.com>
 ;; Maintainer: Romain Châtel <rchastel@protonmail.com>
 ;; URL: https://gitlab.com/rchastel1/yas-autoinsert
 ;; Version: 1.0.0
@@ -43,9 +43,9 @@
 
 ;; Each template with `autoinsert' in its `group' property will be turned into a
 ;; new element to `push' onto `auto-insert-alist'.  Its `condition' property
-;; will become the conditions for insertion and expansion of the template and must
-;; conform to the syntax alowed by autoinsert for the `car' of `auto-insert-alist'
-;; ie :
+;; will become the conditions for insertion and expansion of the template and
+;; must conform to the syntax alowed by autoinsert for the `car' of
+;; `auto-insert-alist' ie :
 ;;
 ;; condition            <- "'" ? (single-conditon / condition-list)
 ;; condition-list       <- "(" single-conditon * ")"
@@ -147,7 +147,10 @@
 ;;       (channel
 ;;        (version 0)
 ;;        (keyring-reference "${1:keyring}")
-;;        (url "https://gitlab.com/rchastel1/${2:`(file-name-base (directory-file-name (file-name-directory buffer-file-name)))`}.git")
+;;        (url "https://gitlab.com/rchastel1/${2:
+;;             `(file-name-base
+;;                (directory-file-name
+;;                  (file-name-directory buffer-file-name)))`}.git")
 ;;        $0)
 ;;
 ;;     Condition list:
@@ -167,10 +170,11 @@
 ;;         (export )
 ;;         (import
 ;;           (rnrs (6))
-;;           $2))
+;;           $2)
 ;;
-;;       $0
-
+;;         $0
+;;         )
+;;
 ;;; Code:
 
 (require 'seq)
@@ -178,31 +182,15 @@
 ;; (require 'cl-lib)
 (require 'yasnippet)
 
-
 ;;------------------------------------------------------------------------------
 ;; Compat utilities
-;; -- static-if
-(defmacro yas-autoinsert--static-if (condition then-form &rest else-forms)
-  "A conditional compilation macro.
-Evaluate CONDITION at macro-expansion time.  If it is non-nil,
-expand the macro to THEN-FORM.  Otherwise expand it to ELSE-FORMS
-enclosed in a `progn' form.  ELSE-FORMS may be empty."
-  (declare (indent 2)
-           (debug (sexp sexp &rest sexp)))
-  (if (eval condition lexical-binding)
-      then-form
-    (cons 'progn else-forms)))
+(defun yas-autoinsert--always (&rest _)
+  "Always return t."
+  t)
 
-;; -- always/ignore
-(yas-autoinsert--static-if
- (boundp 'always)
- (defalias 'yas-autoinsert--always 'always)
- (defun yas-autoinsert--always (&rest _) t))
-
-(yas-autoinsert--static-if
- (boundp 'ignore)
- (defalias 'yas-autoinsert--ignore 'ignore)
- (defun yas-autoinsert--ignore (&rest _) nil))
+(defun yas-autoinsert--ignore (&rest _)
+  "Always return nil."
+  nil)
 
 ;;------------------------------------------------------------------------------
 ;; Public API
@@ -223,7 +211,7 @@ When yas-autoinsert is enabled, any template defined with YASnippet
 and containing `autoinsert' in its `group' property is automatically inserted
 into `auto-insert-alist' for automatic insertion and expansion with its
 `condition' property value serving as `autoinsert' conditions."
-  :lighter "yai"
+  :lighter " yai"
   :global t
   (cond
    ((and yas-autoinsert-mode (featurep 'yas-autoinsert))
@@ -331,8 +319,11 @@ Useful for debugging purpose."
   "Tell if MAYBE-YAS-AUTOINSERT-ALIST-ENTRY was created by `yas-autoinsert'.
 
 Useful for debugging purpose"
-  (ignore-errors (eq #'yas-autoinsert--expand-buffer
-                     (aref (cdr maybe-yas-autoinsert-alist-entry) 1))))
+  (let* ((is-cons (consp maybe-yas-autoinsert-alist-entry))
+         (entry (and is-cons (cdr maybe-yas-autoinsert-alist-entry)))
+         (is-array (arrayp entry))
+         (action (and is-array (aref entry 1))))
+    (and action (eq #'yas-autoinsert--expand-buffer action))))
 
 (defun yas-autoinsert-alist-entry-eqv (lhs rhs)
   "Tell if 2 `auto-insert-alist' entries are equivalent.
@@ -363,7 +354,7 @@ If only MODE is nil, sets it to the current `major-mode' value.
 If no snippet can be found returns nil."
   (let ((name+mode
          (if name (list name (or mode major-mode))
-           (if (eq major-mode 'snippet-mode)
+           (if (derived-mode-p 'snippet-mode)
                (let ((mode (yas-autoinsert--snippet-mode-from-path
                             (expand-file-name (buffer-file-name))))
                      (pos (point)))
@@ -408,7 +399,7 @@ Return t if MAYBE-CONDITION follows the folowing grammar :
     (_ nil)))
 
 (defun yas-autoinsert--parse-condition* (condition ok ok* err)
-  "Parse an YASnippet CONDITION into a list of `auto-insert' conditions.
+  "Parse an YASnippet CONDITION into a list of `autoinsert' conditions.
 
 OK, OK* and ERR are continuations called respectively with:
 - the sole condition found
@@ -429,7 +420,7 @@ OK, OK* and ERR are continuations called respectively with:
     (_ (funcall err condition))))
 
 (defun yas-autoinsert--parse-condition (condition)
-  "Parse an YASnippet CONDITION into a list of `auto-insert' conditions.
+  "Parse an YASnippet CONDITION into a list of `autoinsert' conditions.
 
 Throws an error if a non valid condition is found."
   (yas-autoinsert--parse-condition*
