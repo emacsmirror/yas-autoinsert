@@ -4,6 +4,7 @@
 #+TITLE: YAS Autoinsert
 
 [[https://gitlab.com/rchastel1/emacs/yas-autoinsert/-/releases/permalink/latest][https://gitlab.com/rchastel1/emacs/yas-autoinsert//-//badges/release.svg]]
+[[https://melpa.org/#/yas-autoinsert][file:https://melpa.org/packages/yas-autoinsert-badge.svg]]
 [[https://gitlab.com/rchastel1/emacs/yas-autoinsert/-/commits/main][https://gitlab.com/rchastel1/emacs/yas-autoinsert/badges/main/pipeline.svg]]
 
 ** Description
